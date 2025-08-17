@@ -1,0 +1,14 @@
+{
+	"geode": "4.7.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "cvolton.level_timelapser",
+	"name": "Level Timelapser",
+	"version": "v1.0.0",
+	"developer": "Cvolton",
+	"description": "plays a timelapse of how a level was built"
+}
