@@ -2,18 +2,112 @@
 
 using namespace geode::prelude;
 
+const size_t TIMELAPSE_INTERVAL = 200;
+
 #include <Geode/modify/LevelEditorLayer.hpp>
 class $modify(LTLevelEditorLayer, LevelEditorLayer) {
     struct Fields {
         std::vector<std::string> m_timelapseObjects;
         size_t m_timelapseIndex = 1;
+        CCAction* m_timelapseAction = nullptr;
+        float m_lastY = -9999999.f;
+        std::vector<std::pair<float, float>> m_timelapsePositions;
     };
+
+    void reimplCenterCameraOnObject(GameObject* obj) {
+        auto fields = m_fields.self();
+
+        auto winSize = CCDirector::get()->getWinSize();
+        auto scale = m_objectLayer->getScale();
+        auto x = (winSize.width * 0.5f) - (obj->getPositionX() * scale);
+        auto y = (winSize.height * 0.5f) - (obj->getPositionY() * scale);
+
+        if(std::abs(fields->m_lastY - y) > 300.f) {
+            fields->m_lastY = y;
+        }
+
+        //cancel previous action if exists
+        /*if (fields->m_timelapseAction) {
+            m_objectLayer->stopAction(fields->m_timelapseAction);
+            fields->m_timelapseAction = nullptr;
+        }*/
+
+        //create a ccaction that takes a second to move to setPosition
+        //fields->m_timelapseAction = CCMoveTo::create(0.5f, ccp(x, fields->m_lastY));
+        //m_objectLayer->runAction(fields->m_timelapseAction);
+
+        m_objectLayer->setPosition(ccp(x, y));
+        m_editorUI->constrainGameLayerPosition(-100, -100);
+    }
+
+    void reimplCenterCameraOnObjectCoords(float x, float y) {
+        auto fields = m_fields.self();
+
+        auto winSize = CCDirector::get()->getWinSize();
+        auto scale = m_objectLayer->getScale();
+        x = (winSize.width * 0.5f) - (x * scale);
+        y = (winSize.height * 0.5f) - (y * scale);
+
+        //cancel previous action if exists
+        if (fields->m_timelapseAction) {
+            m_objectLayer->stopAction(fields->m_timelapseAction);
+            fields->m_timelapseAction = nullptr;
+        }
+
+        //create a ccaction that takes a second to move to setPosition
+        CCEaseInOut* easeAction = CCEaseInOut::create(
+            CCMoveTo::create(5.f, ccp(x, y)), 2.0f
+        );
+        fields->m_timelapseAction = easeAction;
+        m_objectLayer->runAction(fields->m_timelapseAction);
+        m_editorUI->constrainGameLayerPosition(-100, -100);
+
+        fields->m_timelapseAction = easeAction;
+    }
+
+    void reimplCenterCameraOnObjectCoords(std::pair<float, float> coords) {
+        this->reimplCenterCameraOnObjectCoords(coords.first, coords.second);
+    }
 
     void initTimelapse(const std::vector<std::string>& objects) {
         auto fields = m_fields.self();
         fields->m_timelapseObjects = objects;
 
         this->scheduleOnce(schedule_selector(LTLevelEditorLayer::beginTimelapse), 2.5f);
+
+        float minX, maxX, minY, maxY;
+        size_t idx = 0;
+        for(auto& obj : fields->m_timelapseObjects) {
+            if (obj.empty() || !obj.starts_with("1")) continue;
+
+            auto gameObjs = this->createObjectsFromString(obj, true, true);
+            if (gameObjs->count() > 0) {
+                auto gameObj = static_cast<GameObject*>(gameObjs->objectAtIndex(0));
+                if (idx == 0) {
+                    minX = maxX = gameObj->getPositionX();
+                    minY = maxY = gameObj->getPositionY();
+                } else {
+                    minX = std::min(minX, gameObj->getPositionX());
+                    maxX = std::max(maxX, gameObj->getPositionX());
+                    minY = std::min(minY, gameObj->getPositionY());
+                    maxY = std::max(maxY, gameObj->getPositionY());
+                }
+                m_editorUI->deleteObject(gameObj, true);
+            }
+
+            idx++;
+            if (idx >= TIMELAPSE_INTERVAL) {
+                float avgX = (minX + maxX) / 2.f;
+                float avgY = (minY + maxY) / 2.f;
+                fields->m_timelapsePositions.push_back({avgX, avgY});
+
+                idx = 0;
+            }
+        }
+
+        for(size_t i = 0; i < 5; i++) {
+            m_editorUI->zoomOut(nullptr);
+        }
     }
 
     void beginTimelapse(float dt) {
@@ -25,7 +119,20 @@ class $modify(LTLevelEditorLayer, LevelEditorLayer) {
         auto fields = m_fields.self();
         log::info("Updating timelapse, index: {}", fields->m_timelapseIndex);
         if (fields->m_timelapseIndex < fields->m_timelapseObjects.size()) {
-            this->createObjectsFromString(fields->m_timelapseObjects[fields->m_timelapseIndex], true, true);
+            auto string = fields->m_timelapseObjects[fields->m_timelapseIndex];
+            if(string.empty()) {
+                return;
+            }
+            auto objects = this->createObjectsFromString(string, true, true);
+            if(objects->count() > 0 && fields->m_timelapseIndex == 1) {
+                this->reimplCenterCameraOnObject(static_cast<GameObject*>(objects->objectAtIndex(0)));
+            }
+
+            if(fields->m_timelapseIndex % TIMELAPSE_INTERVAL == (0)) {
+                this->reimplCenterCameraOnObjectCoords(fields->m_timelapsePositions[(fields->m_timelapseIndex / TIMELAPSE_INTERVAL) + 1]);
+            }
+
+            if(fields->m_timelapseIndex)
             fields->m_timelapseIndex++;
         }
     }
