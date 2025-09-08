@@ -13,17 +13,16 @@ class $modify(LTLevelEditorLayer, LevelEditorLayer) {
         auto fields = m_fields.self();
         fields->m_timelapseObjects = objects;
 
-        this->scheduleOnce(schedule_selector(LTLevelEditorLayer::beginTimelapse), 2.5f);
+        this->scheduleOnce(schedule_selector(LTLevelEditorLayer::beginTimelapse), 1.f);
     }
 
     void beginTimelapse(float dt) {
-        log::info("Starting timelapse with {} objects", m_fields.self()->m_timelapseObjects.size());
+        log::debug("Starting timelapse with {} objects", m_fields.self()->m_timelapseObjects.size());
         this->schedule(schedule_selector(LTLevelEditorLayer::updateTimelapse), 0.01f);
     }
 
     void updateTimelapse(float dt) {
         auto fields = m_fields.self();
-        log::info("Updating timelapse, index: {}", fields->m_timelapseIndex);
         if (fields->m_timelapseIndex < fields->m_timelapseObjects.size()) {
             this->createObjectsFromString(fields->m_timelapseObjects[fields->m_timelapseIndex], true, true);
             fields->m_timelapseIndex++;
@@ -37,6 +36,8 @@ void timelapseLevel(GJGameLevel* ogLevel) {
 
     auto level = GJGameLevel::create();
     level->m_levelString = objects[0] + ";";
+    level->m_fastEditorZoom = 0.4f;
+    level->m_lastCameraPos = CCPoint(35, 90);
 
     auto editor = LevelEditorLayer::scene(level, false);
     auto transitionFade = CCTransitionFade::create(0.5f, editor);
