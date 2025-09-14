@@ -10,17 +10,19 @@ class ObjectStream {
 public:
     ObjectStream() = default;
 
-    ObjectStream(const std::string& levelString) {
-        m_stream = std::stringstream(levelString);
+    ObjectStream(const std::string& levelString) : m_stream(levelString) {
         m_objectCount = std::count(levelString.begin(), levelString.end(), ';');
+        if (!levelString.empty() && levelString.back() != ';') {
+            ++m_objectCount;
+        }
     }
 
-    std::string getNextObject() {
+    std::optional<std::string> getNextObject() {
         std::string object;
         if(getline(m_stream, object, ';')) {
             return object;
         }
-        return "";
+        return std::nullopt;
     }
 
     size_t getObjectCount() const {

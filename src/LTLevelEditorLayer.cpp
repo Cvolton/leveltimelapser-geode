@@ -28,9 +28,8 @@ void LTLevelEditorLayer::updateTimelapse(float dt)  {
 
 void LTLevelEditorLayer::doTimelapseStep() {
     auto fields = m_fields.self();
-    auto object = fields->m_timelapseObjects.getNextObject();
-    if (!object.empty()) {
-        this->createObjectsFromString(object, true, true);
+    if (auto object = fields->m_timelapseObjects.getNextObject()) {
+        this->createObjectsFromString(*object, true, true);
     } else {
         log::debug("Timelapse complete");
         this->unschedule(schedule_selector(LTLevelEditorLayer::updateTimelapse));
