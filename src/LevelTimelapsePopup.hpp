@@ -50,7 +50,7 @@ protected:
     void timelapseLevel(GJGameLevel* ogLevel) {
         auto level = GJGameLevel::create();
         level->m_levelString = m_objects.getNextObject().value_or("") + ";";
-        level->m_fastEditorZoom = 0.4f;
+        level->m_lastEditorZoom = 0.4f;
         level->m_lastCameraPos = CCPoint(35, 90);
 
         auto editor = LevelEditorLayer::scene(level, false);
