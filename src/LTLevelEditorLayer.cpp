@@ -2,7 +2,7 @@
 
 using namespace geode::prelude;
 
-void LTLevelEditorLayer::initTimelapse(ObjectStream objects, float delayPerObject) {
+void LTLevelEditorLayer::initTimelapse(ObjectStream&& objects, float delayPerObject) {
     auto fields = m_fields.self();
     fields->m_timelapseObjects = std::move(objects);
     fields->m_timelapseDelay = delayPerObject;
