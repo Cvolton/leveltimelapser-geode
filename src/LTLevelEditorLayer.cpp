@@ -17,11 +17,23 @@ void LTLevelEditorLayer::beginTimelapse(float dt) {
 }
 
 void LTLevelEditorLayer::updateTimelapse(float dt)  {
-    log::info("dt {}", dt);
+    auto fields = m_fields.self();
+    float acc = fields->m_timelapseAccumulator + dt;
 
+    while (acc >= fields->m_timelapseDelay) {
+        acc -= fields->m_timelapseDelay;
+        this->doTimelapseStep();
+    }
+    fields->m_timelapseAccumulator = acc;
+}
+
+void LTLevelEditorLayer::doTimelapseStep() {
     auto fields = m_fields.self();
     if (fields->m_timelapseIndex < fields->m_timelapseObjects.size()) {
         this->createObjectsFromString(fields->m_timelapseObjects[fields->m_timelapseIndex], true, true);
         fields->m_timelapseIndex++;
+    } else {
+        log::debug("Timelapse complete");
+        this->unschedule(schedule_selector(LTLevelEditorLayer::updateTimelapse));
     }
 }
