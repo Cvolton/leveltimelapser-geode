@@ -5,28 +5,10 @@
 using namespace geode::prelude;
 
 #include <Geode/modify/LevelEditorLayer.hpp>
-
-
-void timelapseLevel(GJGameLevel* ogLevel) {
-    auto decodedLevelString = ZipUtils::decompressString(ogLevel->m_levelString, false, 0);
-    std::vector<std::string> objects = utils::string::split(decodedLevelString, ";");
-
-    auto level = GJGameLevel::create();
-    level->m_levelString = objects[0] + ";";
-    level->m_fastEditorZoom = 0.4f;
-    level->m_lastCameraPos = CCPoint(35, 90);
-
-    auto editor = LevelEditorLayer::scene(level, false);
-    auto transitionFade = CCTransitionFade::create(0.5f, editor);
-    CCDirector::sharedDirector()->replaceScene(transitionFade);
-
-    static_cast<LTLevelEditorLayer*>(editor->getChildByType<LevelEditorLayer>(0))->initTimelapse(objects);
-}
-
 #include <Geode/modify/LevelInfoLayer.hpp>
 class $modify(LTLevelInfoLayer, LevelInfoLayer) {
     void onTimelapse(CCObject* sender) {
-        timelapseLevel(m_level);
+        LevelTimelapsePopup::create(m_level)->show();
     }
 
     bool init(GJGameLevel* level, bool challenge) {
@@ -50,7 +32,7 @@ class $modify(LTLevelInfoLayer, LevelInfoLayer) {
 #include <Geode/modify/EditLevelLayer.hpp>
 class $modify(LTEditLevelLayer, EditLevelLayer) {
     void onTimelapse(CCObject* sender) {
-        timelapseLevel(m_level);
+        LevelTimelapsePopup::create(m_level)->show();
     }
 
     bool init(GJGameLevel* level) {
