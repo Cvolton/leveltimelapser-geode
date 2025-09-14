@@ -2,16 +2,16 @@
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelEditorLayer.hpp>
+#include "ObjectStream.hpp"
 
 struct LTLevelEditorLayer : public geode::Modify<class LTLevelEditorLayer, LevelEditorLayer> {
     struct Fields {
-        std::vector<std::string> m_timelapseObjects;
-        size_t m_timelapseIndex = 1;
+        ObjectStream m_timelapseObjects;
         float m_timelapseDelay = 0.05f;
         float m_timelapseAccumulator = 0.f;
     };
 
-    void initTimelapse(const std::vector<std::string>& objects, float delayPerObject);
+    void initTimelapse(ObjectStream objects, float delayPerObject);
     void beginTimelapse(float dt);
     void updateTimelapse(float dt);
     void doTimelapseStep();
