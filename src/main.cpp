@@ -8,6 +8,10 @@ using namespace geode::prelude;
 #include <Geode/modify/LevelInfoLayer.hpp>
 class $modify(LTLevelInfoLayer, LevelInfoLayer) {
     void onTimelapse(CCObject* sender) {
+        if (m_level->m_levelString.empty()) {
+            return Notification::create(" Unable to start timelapse:\n Level is not downloaded.", NotificationIcon::Error)->show();
+        }
+
         LevelTimelapsePopup::create(m_level)->show();
     }
 
@@ -32,6 +36,10 @@ class $modify(LTLevelInfoLayer, LevelInfoLayer) {
 #include <Geode/modify/EditLevelLayer.hpp>
 class $modify(LTEditLevelLayer, EditLevelLayer) {
     void onTimelapse(CCObject* sender) {
+        if (m_level->m_levelString.empty()) {
+            return Notification::create(" Unable to start timelapse:\n Level is empty.", NotificationIcon::Error)->show();
+        }
+
         LevelTimelapsePopup::create(m_level)->show();
     }
 
