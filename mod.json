@@ -10,5 +10,8 @@
 	"name": "Level Timelapser",
 	"version": "v1.0.0",
 	"developer": "Cvolton",
-	"description": "plays a timelapse of how a level was built"
+	"description": "plays a timelapse of how a level was built",
+	"dependencies": {
+        "geode.node-ids": "v1.21.0"
+	}
 }
