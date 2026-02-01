@@ -4,14 +4,18 @@
 
 using namespace geode::prelude;
 
-class LevelTimelapsePopup : public geode::Popup<GJGameLevel*> {
+class LevelTimelapsePopup : public Popup {
 protected:
     GJGameLevel* m_level = nullptr;
     Slider* m_slider = nullptr;
     CCLabelBMFont* m_timeEstimated = nullptr;
     ObjectStream m_objects;
 
-    bool setup(GJGameLevel* level) override {
+    bool init(GJGameLevel* level) {
+        if(!Popup::init(240.f, 160.f)) {
+            return false;
+        }
+
         this->setTitle("Timelapse Speed");
         m_level = level;
 
@@ -63,7 +67,7 @@ protected:
 public:
     static LevelTimelapsePopup* create(GJGameLevel* level) {
         auto ret = new LevelTimelapsePopup();
-        if (ret->initAnchored(240.f, 160.f, level)) {
+        if (ret->init(level)) {
             ret->autorelease();
             return ret;
         }
