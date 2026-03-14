@@ -19,7 +19,7 @@ class $modify(LTLevelInfoLayer, LevelInfoLayer) {
         if (!LevelInfoLayer::init(level, challenge)) return false;
         
         auto timelapseBtn = CCMenuItemSpriteExtra::create(
-            CCSprite::createWithSpriteFrameName("GJ_gpBtn_001.png"),
+            CCSprite::createWithSpriteFrameName("GJ_viewLevelsBtn_001.png"),
             this,
             menu_selector(LTLevelInfoLayer::onTimelapse)
         );
@@ -47,7 +47,7 @@ class $modify(LTEditLevelLayer, EditLevelLayer) {
         if (!EditLevelLayer::init(level)) return false;
 
         auto timelapseBtn = CCMenuItemSpriteExtra::create(
-            CCSprite::createWithSpriteFrameName("GJ_gpBtn_001.png"),
+            CCSprite::createWithSpriteFrameName("GJ_viewLevelsBtn_001.png"),
             this,
             menu_selector(LTEditLevelLayer::onTimelapse)
         );
