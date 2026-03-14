@@ -6,7 +6,7 @@ using namespace geode::prelude;
 
 class LevelTimelapsePopup : public Popup {
 protected:
-    GJGameLevel* m_level = nullptr;
+    Ref<GJGameLevel> m_level = nullptr;
     Slider* m_slider = nullptr;
     CCLabelBMFont* m_timeEstimated = nullptr;
     ObjectStream m_objects;
