@@ -47,8 +47,8 @@ protected:
     }
 
     void onSliderChange(CCObject* sender) {
-        int estimatedTime = static_cast<int>(static_cast<float>(m_objects.getObjectCount()) * this->delayPerObject());
-        m_timeEstimated->setString(("Estimated Time: " + std::to_string(estimatedTime) + "s").c_str());
+        int estimatedTime = static_cast<int>(this->delayPerObject() * m_objects.getObjectCount());
+        m_timeEstimated->setString(fmt::format("Estimated Time: {}s", estimatedTime).c_str());
     }
 
     void timelapseLevel(GJGameLevel* ogLevel) {
