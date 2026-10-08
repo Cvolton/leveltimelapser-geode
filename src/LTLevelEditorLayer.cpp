@@ -6,6 +6,7 @@ void LTLevelEditorLayer::initTimelapse(ObjectStream&& objects, float delayPerObj
     auto fields = m_fields.self();
     fields->m_timelapseObjects = std::move(objects);
     fields->m_timelapseDelay = delayPerObject;
+    fields->m_self = this;
 
     this->scheduleOnce(schedule_selector(LTLevelEditorLayer::beginTimelapse), 1.f);
 }

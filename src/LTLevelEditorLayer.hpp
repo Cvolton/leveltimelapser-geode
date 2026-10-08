@@ -9,6 +9,14 @@ struct LTLevelEditorLayer : public geode::Modify<class LTLevelEditorLayer, Level
         ObjectStream m_timelapseObjects;
         float m_timelapseDelay = 0.05f;
         float m_timelapseAccumulator = 0.f;
+        LevelEditorLayer* m_self = nullptr;
+
+        ~Fields() {
+            if(m_self) {
+                m_self->unschedule(schedule_selector(LTLevelEditorLayer::beginTimelapse));
+                m_self->unschedule(schedule_selector(LTLevelEditorLayer::updateTimelapse));
+            }
+        }
     };
 
     void initTimelapse(ObjectStream&& objects, float delayPerObject);
