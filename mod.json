@@ -8,7 +8,7 @@
 	},
 	"id": "cvolton.level_timelapser",
 	"name": "Level Timelapser",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "Cvolton",
 	"description": "Plays a timelapse of how a level was built",
 	"tags": [
