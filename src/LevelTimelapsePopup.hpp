@@ -8,7 +8,7 @@ class LevelTimelapsePopup : public Popup {
 protected:
     Ref<GJGameLevel> m_level = nullptr;
     Slider* m_slider = nullptr;
-    CCLabelBMFont* m_timeEstimated = nullptr;
+    Label* m_timeEstimated = nullptr;
     ObjectStream m_objects;
 
     bool init(GJGameLevel* level) {
@@ -32,7 +32,7 @@ protected:
         m_slider->setValue(0.5f);
         m_buttonMenu->addChildAtPosition(m_slider, Anchor::Center, CCPoint(0, 0));
 
-        m_timeEstimated = CCLabelBMFont::create("Estimated Time: 0s", "bigFont.fnt");
+        m_timeEstimated = Label::create("Estimated Time: 0s", "bigFont.fnt");
         m_timeEstimated->setScale(0.4f);
         m_buttonMenu->addChildAtPosition(m_timeEstimated, Anchor::Center, CCPoint(0, 20));
 
