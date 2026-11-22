@@ -1,5 +1,5 @@
 {
-	"geode": "6.0.0-alpha.1",
+	"geode": "6.0.0-beta.1",
 	"gd": {
 		"win": "2.2091",
 		"android": "2.2091",
@@ -8,7 +8,7 @@
 	},
 	"id": "cvolton.level_timelapser",
 	"name": "Level Timelapser",
-	"version": "v1.0.1",
+	"version": "v1.1.0",
 	"developer": "Cvolton",
 	"description": "Plays a timelapse of how a level was built",
 	"tags": [
